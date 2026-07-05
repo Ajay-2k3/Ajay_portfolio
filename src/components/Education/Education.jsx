@@ -184,7 +184,7 @@ export default function Education() {
                           <span>{edu.location}</span>
                         </div>
                         <p className="text-xs text-textMuted mt-4 leading-relaxed font-mono">
-                          Completed standard undergraduate computer applications curriculum with core coursework in Object Oriented Programming and Database Systems.
+                          {edu.description}
                         </p>
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export default function Education() {
                           <span>{edu.location}</span>
                         </div>
                         <p className="text-xs text-textMuted mt-4 leading-relaxed font-mono">
-                          Actively pursuing advanced master software systems degree. Specialized coursework in Enterprise Architectures, Web Services, and Data Science.
+                          {edu.description}
                         </p>
                       </div>
                     </div>

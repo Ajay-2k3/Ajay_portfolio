@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUp, Heart } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import gsap from "gsap";
-import { footer, logo } from "../../data/portfolio";
+import { footer } from "../../data/portfolio";
 
 export default function Footer() {
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const marqueeInnerRef = useRef(null);
-  const logoRef = useRef(null);
 
   // 1. Infinite Marquee Animation (GSAP)
   useEffect(() => {
@@ -51,13 +50,6 @@ export default function Footer() {
     });
   };
 
-  // 4. Logo hover scale pulse
-  const handleLogoMouseEnter = () => {
-    gsap.timeline()
-      .to(logoRef.current, { scale: 1.15, duration: 0.2, ease: "power2.out" })
-      .to(logoRef.current, { scale: 1, duration: 0.2, ease: "power2.in" });
-  };
-
   return (
     <footer className="w-full bg-[#0d0d1a]/40 border-t border-borderViolet/10 relative z-20">
       
@@ -83,52 +75,45 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 md:px-12 py-12 flex flex-col gap-8">
-        {/* Row 2: Name/logo (left) + links (center) + Credits (right) */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-borderViolet/5">
-          {/* Logo */}
-          <div className="text-left">
-            <span
-              ref={logoRef}
-              onMouseEnter={handleLogoMouseEnter}
-              className="inline-block text-xl font-bold font-display tracking-wider text-accentCyan cursor-pointer select-none"
-            >
-              {logo}
-              <span className="text-accentViolet">.</span>
-            </span>
-          </div>
-
-          {/* Links */}
-          <div className="flex items-center gap-6 font-mono text-xs text-textMuted">
-            {footer.navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="hover:text-accentPink transition-colors duration-200"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-
-          {/* Credits */}
-          <div className="text-xs font-mono text-textMuted flex items-center gap-1.5">
-            <span>Built with</span>
-            <Heart size={12} className="text-accentPink fill-accentPink/30" />
-            <span>in React</span>
-          </div>
-        </div>
-
-        {/* Row 3: Copyright */}
+      <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
+        {/* Unified Copyright & Links Row */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] md:text-xs font-mono text-textMuted"
+          className="flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] md:text-xs font-mono text-textMuted"
         >
+          {/* Left: Copyright */}
           <span>&copy; {footer.year} Ajay S. All rights reserved.</span>
-          <span>Designed & Engineered with Precision</span>
+
+          {/* Right: Links */}
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/Ajay-2k3"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-accentPink transition-colors duration-200"
+            >
+              GitHub
+            </a>
+            <span>·</span>
+            <a
+              href="https://linkedin.com/in/ajay-s-4b3383267"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-accentPink transition-colors duration-200"
+            >
+              LinkedIn
+            </a>
+            <span>·</span>
+            <button
+              onClick={handleScrollToTop}
+              className="hover:text-accentPink transition-colors duration-200 focus:outline-none flex items-center gap-1"
+            >
+              ↑ Back to Top
+            </button>
+          </div>
         </motion.div>
       </div>
 

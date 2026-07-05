@@ -9,7 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef = useRef(null);
-  
+
   // Portrait card references
   const portraitContainerRef = useRef(null);
   const portraitImageRef = useRef(null);
@@ -196,7 +196,7 @@ export default function About() {
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-16 items-center">
         {/* Left column: Portrait tilt card (60/40 Split: Column 1) */}
         <div className="w-full lg:w-5/12 flex justify-center relative">
-          
+
           {/* Card tilt container */}
           <div
             ref={portraitContainerRef}
@@ -225,7 +225,7 @@ export default function About() {
             >
               {/* Overlay glass glare */}
               <div className="absolute inset-0 bg-gradient-to-tr from-accentViolet/5 via-transparent to-accentCyan/5 z-10 pointer-events-none group-hover:opacity-60 transition-opacity duration-300" />
-              
+
               {/* Fallback mockup profile graphics representing Ajay */}
               <div className="w-full h-full flex flex-col items-center justify-center p-8 bg-gradient-to-b from-[#0d0d1a] to-[#05050f] text-center border-2 border-borderViolet/20 rounded-2xl select-none">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-accentViolet to-accentCyan flex items-center justify-center text-3xl font-bold font-display text-white shadow-xl shadow-accentViolet/10 mb-6">
@@ -239,11 +239,11 @@ export default function About() {
                 <div className="mt-8 pt-6 w-full border-t border-borderViolet/10 flex justify-around text-center text-xs font-mono">
                   <div>
                     <span className="block text-accentPink font-bold">12+</span>
-                    <span className="text-[10px] text-textMuted">PROJECTS</span>
+                    <span className="text-[10px] text-textMuted">ENDPOINTS</span>
                   </div>
                   <div>
                     <span className="block text-accentCyan font-bold">180+</span>
-                    <span className="text-[10px] text-textMuted">LEETCODE</span>
+                    <span className="text-[10px] text-textMuted">DSA SOLVED</span>
                   </div>
                 </div>
               </div>
@@ -253,7 +253,7 @@ export default function About() {
 
         {/* Right column: Content (60/40 Split: Column 2) */}
         <div className="w-full lg:w-7/12 flex flex-col text-left">
-          
+
           {/* Framer Motion slides in title from x:-30 */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}

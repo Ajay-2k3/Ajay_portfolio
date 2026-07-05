@@ -212,11 +212,11 @@ export default function Contact() {
       <div className="absolute w-[200px] h-[200px] rounded-full bg-accentCyan/5 glow-orb bottom-10 left-10 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-        
+
         {/* Left Side: Large Kinetic Text (5/12 cols) */}
         <div className="lg:col-span-5 flex flex-col text-left justify-center">
           <span className="text-accentCyan font-mono text-xs uppercase tracking-widest mb-1">Get In Touch</span>
-          
+
           {/* Kinetic staggered header words */}
           <div className="text-4xl md:text-5xl lg:text-6xl font-bold font-display leading-[1.1] mb-6 tracking-tight">
             <span ref={w1Ref} className="block text-textPrimary">Let's</span>
@@ -242,10 +242,6 @@ export default function Contact() {
               >
                 {contact.email}
               </button>
-            </div>
-            <div className="flex items-center gap-3 text-textMuted">
-              <Phone size={16} className="text-accentCyan" />
-              <span>{contact.phone}</span>
             </div>
             <div className="flex items-center gap-3 text-textMuted">
               <MapPin size={16} className="text-accentPink" />
@@ -278,7 +274,7 @@ export default function Contact() {
                   <label htmlFor={field.name} className="text-xs font-mono text-textMuted uppercase tracking-wider pl-1">
                     {field.label}
                   </label>
-                  
+
                   {field.type === "textarea" ? (
                     <textarea
                       id={field.name}

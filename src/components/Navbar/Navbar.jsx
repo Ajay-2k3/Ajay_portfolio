@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
 import { navLinks, logo } from "../../data/portfolio";
@@ -7,164 +7,188 @@ import useMagnet from "../../hooks/useMagnet";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navContainerRef = useRef(null);
+  const [hoveredIdx, setHoveredIdx] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   
-  // Apply our custom magnetic effect (max ±8px) to the logo
-  const logoRef = useMagnet(8);
+  const navContainerRef = useRef(null);
+  const logoRef = useMagnet(10); // Dynamic magnetic logo pull
 
-  // Mount animation for links and logo
+  // Compress and glow the capsule dock on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Sync initial mount
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Entrance animations for dock buttons
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".nav-logo, .nav-desktop-link, .nav-mobile-btn", {
-        y: -20,
+      gsap.from(".dock-item", {
+        y: -25,
         opacity: 0,
-        stagger: 0.08,
-        duration: 0.6,
-        ease: "power2.out",
-        delay: 0.1,
+        stagger: 0.06,
+        duration: 0.8,
+        ease: "power3.out",
+        delay: 0.15,
       });
     }, navContainerRef);
 
     return () => ctx.revert();
   }, []);
 
-  // QuickSetter for blur & background opacity on scroll > 50px
-  useEffect(() => {
-    const nav = navContainerRef.current;
-    if (!nav) return;
-
-    // quickSetter for target css variables or properties
-    const setBg = gsap.quickSetter(nav, "backgroundColor");
-    const setBlur = gsap.quickSetter(nav, "backdropFilter");
-    const setBorder = gsap.quickSetter(nav, "borderBottomColor");
-
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setBg("rgba(13, 13, 26, 0.75)");
-        setBlur("blur(20px)");
-        setBorder("rgba(124, 58, 237, 0.15)");
-      } else {
-        setBg("rgba(5, 5, 15, 0)");
-        setBlur("blur(0px)");
-        setBorder("rgba(124, 58, 237, 0)");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    // Call once initially to sync on page refresh
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Framer Motion mobile staggering menu parameters
-  const menuVariants = {
-    hidden: { opacity: 0, x: "100%" },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: { 
-        duration: 0.4, 
-        ease: [0.16, 1, 0.3, 1], // easeOutExpo
-        staggerChildren: 0.07,
-        delayChildren: 0.1
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      x: "100%",
-      transition: { 
-        duration: 0.3, 
-        ease: "easeInOut",
-        staggerChildren: 0.05,
-        staggerDirection: -1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: 40 },
-    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 120, damping: 14 } },
-    exit: { opacity: 0, x: 20 }
-  };
+  // Keep desktop layout minimal and spacious by showing core navigation nodes
+  const desktopLinks = navLinks.filter((link) =>
+    ["About", "Skills", "Projects", "Contact"].includes(link.label)
+  );
 
   return (
     <>
-      <nav
+      {/* Floating Capsule Dock Bar */}
+      <header
         ref={navContainerRef}
-        className="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-12 flex items-center justify-between border-b border-transparent transition-colors duration-300"
+        className="fixed top-0 left-0 w-full z-50 py-5 px-6 md:px-12 flex justify-center pointer-events-none transition-all duration-300"
       >
-        {/* Monogram Logo with magnetic pull */}
-        <a
-          href="#"
-          ref={logoRef}
-          className="nav-logo inline-block text-2xl font-bold font-display tracking-tight text-accentCyan hover:text-accentPink transition-colors duration-300 select-none cursor-pointer"
+        <div
+          className={`w-full max-w-4xl bg-bgSecondary/60 border backdrop-blur-xl rounded-full px-6 py-2.5 flex items-center justify-between shadow-2xl transition-all duration-300 pointer-events-auto select-none ${
+            isScrolled
+              ? "max-w-3xl py-2 border-accentViolet/25 shadow-accentViolet/10 mt-2"
+              : "border-borderViolet/20 mt-0"
+          }`}
         >
-          {logo}
-          <span className="text-accentViolet">.</span>
-        </a>
-
-        {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          
+          {/* Logo Monogram & Telemetry light */}
+          <div className="dock-item flex items-center gap-3.5">
             <a
-              key={link.label}
-              href={link.href}
-              className="nav-desktop-link text-sm font-medium tracking-wide text-textPrimary hover:text-accentViolet transition-colors duration-200"
+              href="#"
+              ref={logoRef}
+              className="text-lg font-bold font-display tracking-tight text-accentCyan hover:text-accentPink transition-colors duration-300 cursor-pointer"
             >
-              {link.label}
+              {logo}
+              <span className="text-accentViolet">.</span>
             </a>
-          ))}
+            
+            {/* Pulsing Status Capsule */}
+            <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#10b981]/10 border border-[#10b981]/25 text-[8px] font-mono font-bold text-[#10b981]">
+              <span className="w-1 h-1 rounded-full bg-[#10b981] animate-ping" />
+              <span>ONLINE</span>
+            </div>
+          </div>
+
+          {/* Desktop Navigation Links (Spaciously Filtered) */}
+          <nav className="dock-item hidden md:flex items-center gap-1">
+            {desktopLinks.map((link, idx) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onMouseEnter={() => setHoveredIdx(idx)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                className="relative px-3.5 py-1.5 text-xs font-mono tracking-wider uppercase text-textPrimary/80 hover:text-white transition-colors duration-200"
+              >
+                {hoveredIdx === idx && (
+                  <motion.span
+                    layoutId="dock-nav-indicator"
+                    className="absolute inset-0 bg-accentViolet/15 border border-accentViolet/30 rounded-full -z-10"
+                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                  />
+                )}
+                {link.label}
+              </a>
+            ))}
+          </nav>
+
+          {/* Action CTAs */}
+          <div className="dock-item flex items-center gap-2">
+            <a
+              href="#contact"
+              className="hidden md:inline-flex px-4 py-1 rounded-full bg-accentViolet/10 hover:bg-accentViolet text-textPrimary hover:text-white border border-accentViolet/40 text-[10px] font-mono tracking-wider transition-all duration-300 shadow-md shadow-accentViolet/5 hover:shadow-accentViolet/20"
+            >
+              <span>HIRE_ME</span>
+              <ArrowUpRight size={12} className="ml-1.5 self-center" />
+            </a>
+
+            {/* Mobile hamburger button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden text-textPrimary hover:text-accentViolet p-2 focus:outline-none cursor-pointer"
+              aria-label="Open menu drawer"
+            >
+              <Menu size={18} />
+            </button>
+          </div>
+
         </div>
+      </header>
 
-        {/* Mobile Toggle Trigger Button */}
-        <button
-          onClick={() => setMobileMenuOpen(true)}
-          className="nav-mobile-btn md:hidden text-textPrimary hover:text-accentViolet p-2 focus:outline-none"
-          aria-label="Open Navigation Menu"
-        >
-          <Menu size={24} />
-        </button>
-      </nav>
-
-      {/* Mobile Menu Panel - Full Screen Overlay using AnimatePresence */}
+      {/* Fullscreen Mobile Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={menuVariants}
-            className="fixed inset-0 w-full h-screen bg-bgSecondary/95 backdrop-blur-2xl z-55 md:hidden flex flex-col p-6 justify-between border-l border-borderViolet"
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            className="fixed inset-0 w-full h-screen bg-bgPrimary/95 z-[99] flex flex-col md:hidden"
           >
-            <div className="flex justify-between items-center py-2">
-              <span className="text-2xl font-bold font-display text-accentCyan">{logo}</span>
+            {/* Drawer Header */}
+            <div className="flex justify-between items-center px-8 py-5 border-b border-borderViolet/10">
+              <span className="text-lg font-bold font-display text-accentCyan">
+                {logo}<span className="text-accentViolet">.</span>
+              </span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-textPrimary hover:text-accentPink p-2 focus:outline-none"
-                aria-label="Close Navigation Menu"
+                className="text-textPrimary hover:text-accentPink p-2 focus:outline-none cursor-pointer"
+                aria-label="Close menu drawer"
               >
-                <X size={24} />
+                <X size={20} />
               </button>
             </div>
 
-            <div className="flex flex-col gap-6 my-auto items-center">
+            {/* Complete listing of navigation anchors */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={{
+                visible: {
+                  transition: { staggerChildren: 0.06 }
+                }
+              }}
+              className="flex-grow flex flex-col justify-center items-center gap-5"
+            >
               {navLinks.map((link) => (
                 <motion.a
+                  variants={{
+                    hidden: { y: 20, opacity: 0 },
+                    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 120, damping: 15 } },
+                    exit: { y: -20, opacity: 0 }
+                  }}
                   key={link.label}
-                  variants={itemVariants}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-2xl font-display font-semibold tracking-wide text-textPrimary hover:text-accentCyan transition-colors duration-200"
+                  className="text-xl font-bold font-display tracking-wide text-textPrimary hover:text-accentCyan transition-colors duration-200"
                 >
                   {link.label}
                 </motion.a>
               ))}
-            </div>
 
-            <div className="text-center text-xs font-mono text-textMuted py-4">
-              Ajay S &copy; {new Date().getFullYear()}
-            </div>
+              <motion.a
+                variants={{
+                  hidden: { scale: 0.9, opacity: 0 },
+                  visible: { scale: 1, opacity: 1, transition: { delay: 0.3 } },
+                  exit: { scale: 0.9, opacity: 0 }
+                }}
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-4 px-6 py-2 rounded-full bg-accentViolet hover:bg-accentViolet/90 text-white text-xs font-mono flex items-center gap-2 shadow-lg shadow-accentViolet/25"
+              >
+                <span>INITIATE_CONTACT</span>
+                <ArrowUpRight size={14} />
+              </motion.a>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -41,7 +41,7 @@ function App() {
       {/* Main content grid */}
       <main className="w-full relative z-10">
         <Hero />
-        
+
         <Suspense fallback={<SectionLoader />}>
           <About />
         </Suspense>
